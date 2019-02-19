@@ -23,11 +23,7 @@ def write(reports, labels, output_path, verbose=False):
                                                    index=False)
 
 
-def label(args):
-    """Label the provided report(s)."""
-
-    loader = Loader(args.reports_path, args.extract_impression)
-
+def prep_objects(args):
     extractor = Extractor(args.mention_phrases_dir,
                           args.unmention_phrases_dir,
                           verbose=args.verbose)
@@ -45,8 +41,6 @@ def label(args, extractor, classifier, aggregator):
     # Load the reports
     loader = Loader(args.reports_path, args.extract_impression)
 
-    # Load reports in place.
-    loader.load()
     # Extract observation mentions in place.
     extractor.extract(loader.collection)
     # Classify mentions in place.
