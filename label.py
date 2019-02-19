@@ -23,15 +23,11 @@ def write(reports, labels, output_path, verbose=False):
                                                    index=False)
 
 
-<<<<<<< 63f19a05982a1b9a5a7dc6061071b9f7c947afec
 def label(args):
     """Label the provided report(s)."""
 
     loader = Loader(args.reports_path, args.extract_impression)
 
-=======
-def prep_objects(args):
->>>>>>> add ability to parse multiple files
     extractor = Extractor(args.mention_phrases_dir,
                           args.unmention_phrases_dir,
                           verbose=args.verbose)
