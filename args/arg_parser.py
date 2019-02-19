@@ -17,6 +17,9 @@ class ArgParser(object):
                             action='store_true',
                             help='Extract the impression section of the ' +
                                  'report.')
+        parser.add_argument('--extension',
+                            default='txt',
+                            help='Extension for reports stored in a folder.')
 
         # Phrases
         parser.add_argument('--mention_phrases_dir',

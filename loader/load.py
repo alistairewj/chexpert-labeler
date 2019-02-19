@@ -1,36 +1,55 @@
 """Define report loader class."""
 import re
+import os
+
 import bioc
 import pandas as pd
 from negbio.pipeline import text2bioc, ssplit, section_split
+from tqdm import tqdm
 
 from constants import *
 
 
 class Loader(object):
     """Report impression loader."""
-    def __init__(self, reports_path, extract_impression=False):
+
+    def __init__(self, reports_path, extract_impression=False, extension='txt'):
         self.reports_path = reports_path
         self.extract_impression = extract_impression
         self.punctuation_spacer = str.maketrans({key: f"{key} "
                                                  for key in ".,"})
         self.splitter = ssplit.NegBioSSplitter(newline=False)
 
-    def load(self):
+    def load_csv(self):
         """Load and clean the reports."""
-        collection = bioc.BioCCollection()
-        reports = pd.read_csv(self.reports_path,
-                              header=None,
-                              names=[REPORTS])[REPORTS].tolist()
+        reports = pd.read_csv(self.reports_path, header=None)
+        # allow users to input
+        #  (1) single column CSV or reports
+        #  (2) two columns; first is the index, second is the report
+        assert reports.shape[1] <= 2,\
+            ('A one or two column CSV with no header is expected as input.')
+        if reports.shape[1] == 1:
+            reports = reports.iloc[:, 0].tolist()
+            index = None
+        else:
+            # reports shape must be 2
+            index = reports.iloc[:, 0].tolist()
+            reports = reports.iloc[:, 1].tolist()
 
-        for i, report in enumerate(reports):
+        self.index = index
+        self.reports = reports
+
+    def prep_collection(self):
+        """Apply splitter and create bioc collection"""
+        collection = bioc.BioCCollection()
+        for i, report in enumerate(self.reports):
             clean_report = self.clean(report)
             document = text2bioc.text2document(str(i), clean_report)
 
             if self.extract_impression:
                 document = section_split.split_document(document)
                 self.extract_impression_from_passages(document)
-            
+
             split_document = self.splitter.split_doc(document)
 
             assert len(split_document.passages) == 1,\
@@ -38,8 +57,6 @@ class Loader(object):
                  'the Impression section.')
 
             collection.add_document(split_document)
-
-        self.reports = reports
         self.collection = collection
 
     def extract_impression_from_passages(self, document):
