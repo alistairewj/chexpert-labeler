@@ -19,6 +19,35 @@ class Loader(object):
         self.punctuation_spacer = str.maketrans({key: f"{key} "
                                                  for key in ".,"})
         self.splitter = ssplit.NegBioSSplitter(newline=False)
+        self.extension = extension
+
+        if os.path.isdir(reports_path):
+            # load in all radiology reports in a folder
+            self.load_files()
+        else:
+            # load in a single CSV file with all radiology reports
+            self.load_csv()
+
+        self.prep_collection()
+
+    def load_files(self):
+        """Load and clean many reports stored in a folder"""
+        files = os.listdir(self.reports_path)
+        files = [f for f in files if f.endswith(self.extension)]
+        assert len(files) > 0,\
+            f'Folder with reports must contain at least one {args.extension} file'
+
+        # if args.verbose:
+        files = tqdm(files)
+        print('Collecting reports from files...')
+
+        # assume one report per file
+        self.reports = list()
+        self.index = list()
+        for f in tqdm(files, total=len(files)):
+            with open(self.reports_path / f, 'r') as fp:
+                self.reports.append(''.join(fp.readlines()))
+            self.index.append(f)
 
     def load_csv(self):
         """Load and clean the reports."""
