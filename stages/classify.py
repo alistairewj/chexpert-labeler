@@ -14,6 +14,7 @@ class ModifiedDetector(neg_detector.Detector):
 
     Overrides parent methods __init__, detect, and match_uncertainty.
     """
+
     def __init__(self, pre_negation_uncertainty_path,
                  negation_path, post_negation_uncertainty_path):
         self.neg_patterns = ngrex.load(negation_path)
@@ -76,11 +77,13 @@ class ModifiedDetector(neg_detector.Detector):
 
 class Classifier(object):
     """Classify mentions of observations from radiology reports."""
+
     def __init__(self, pre_negation_uncertainty_path, negation_path,
                  post_negation_uncertainty_path, verbose=False):
         self.parser = parse.NegBioParser(model_dir=PARSING_MODEL_DIR)
         self.lemmatizer = ptb2ud.Lemmatizer()
-        self.ptb2dep = ptb2ud.NegBioPtb2DepConverter(self.lemmatizer, universal=True)
+        self.ptb2dep = ptb2ud.NegBioPtb2DepConverter(
+            self.lemmatizer, universal=True)
 
         self.verbose = verbose
 
