@@ -35,7 +35,8 @@ class Loader(object):
         files = os.listdir(self.reports_path)
         files = [f for f in files if f.endswith(self.extension)]
         assert len(files) > 0,\
-            f'Folder with reports must contain at least one {args.extension} file'
+            ('Folder with reports must contain at '
+             f'least one ".{self.extension}" file')
 
         files.sort()
 
