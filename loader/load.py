@@ -37,6 +37,8 @@ class Loader(object):
         assert len(files) > 0,\
             f'Folder with reports must contain at least one {args.extension} file'
 
+        files.sort()
+
         # if args.verbose:
         files = tqdm(files)
         print('Collecting reports from files...')
