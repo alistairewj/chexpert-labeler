@@ -5,6 +5,7 @@ from pathlib import Path
 
 class ArgParser(object):
     """Argument parser for label.py"""
+
     def __init__(self):
         """Initialize argument parser."""
         parser = argparse.ArgumentParser()
