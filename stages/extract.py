@@ -113,13 +113,14 @@ class Extractor(object):
         if self.verbose:
             print("Extracting mentions...")
             documents = tqdm(documents)
+        
+        obs_phrases = self.observation2mention_phrases.items()
         for document in documents:
             # Get the Impression section.
             impression = document.passages[0]
             annotation_index = itertools.count(len(impression.annotations))
 
             for sentence in impression.sentences:
-                obs_phrases = self.observation2mention_phrases.items()
                 for observation, phrases in obs_phrases:
                     for phrase in phrases:
                         matches = re.finditer(phrase, sentence.text)
