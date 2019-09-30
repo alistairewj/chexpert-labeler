@@ -69,7 +69,8 @@ class Loader(object):
             reports = reports.iloc[:, 1].tolist()
 
         self.index = index
-        self.reports = reports
+        self.reports = ['' if type(x) is not str else x
+                        for x in reports]
 
     def prep_collection(self):
         """Apply splitter and create bioc collection"""
